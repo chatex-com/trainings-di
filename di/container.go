@@ -74,6 +74,8 @@ func LoadPtrToPtr(element interface{}) error {
 		return ErrMustBePointerToPointer
 	}
 
+	t = v.Elem().Type()
+
 	if t.Kind() != reflect.Struct {
 		return ErrMustBePointerToPointerToStruct
 	}
