@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"di/di"
 )
 
@@ -13,5 +15,7 @@ func main() {
 	_ = di.Set(&src)
 
 	var target *A
-	_ = di.LoadPtrToPtr(&target)
+	err := di.LoadPtrToPtr(&target)
+
+	fmt.Println(err)
 }

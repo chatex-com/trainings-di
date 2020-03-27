@@ -60,6 +60,7 @@ func LoadPtr(element interface{}) error {
 
 func LoadPtrToPtr(element interface{}) error {
 	v := reflect.ValueOf(element)
+
 	t := v.Type()
 
 	if t.Kind() != reflect.Ptr {
@@ -73,7 +74,47 @@ func LoadPtrToPtr(element interface{}) error {
 		return ErrMustBePointerToPointer
 	}
 
-	t = v.Elem().Type()
+	if t.Kind() != reflect.Struct {
+		return ErrMustBePointerToPointerToStruct
+	}
+
+	item, ok := container[t]
+	if !ok {
+		return ErrElementNotFound
+	}
+
+	v.Set(item.Elem().Addr())
+
+	return nil
+}
+
+func LoadPtrToPtrImproved(element interface{}, elementType ...interface{}) error {
+	v := reflect.ValueOf(element)
+
+	et := v.Type()
+	if len(elementType) > 0 {
+		et = reflect.TypeOf(elementType[0])
+	}
+
+	t := v.Type()
+
+	if t.Kind() != reflect.Ptr {
+		return ErrMustBePointer
+	}
+
+	v = v.Elem()
+	t = v.Type()
+
+	if t.Kind() != reflect.Ptr {
+		return ErrMustBePointerToPointer
+	}
+
+	if !v.IsNil() {
+		t = v.Elem().Type()
+	} else {
+		t = et
+	}
+
 	if t.Kind() != reflect.Struct {
 		return ErrMustBePointerToPointerToStruct
 	}
