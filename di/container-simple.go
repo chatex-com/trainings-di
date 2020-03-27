@@ -27,3 +27,16 @@ func SimpleGet(element interface{}) interface{} {
 
 	return simpleContainer[t]
 }
+
+func SimpleGetWithChecks(element interface{}) (interface{}, bool) {
+	v := reflect.ValueOf(element)
+	t := v.Type()
+
+	if t.Kind() == reflect.Ptr {
+		t = v.Elem().Type()
+	}
+
+	e, ok := simpleContainer[t]
+
+	return e, ok
+}
