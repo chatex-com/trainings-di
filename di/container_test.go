@@ -106,3 +106,61 @@ func TestLoadPtr_Success(t *testing.T) {
 		t.Error("element should be loaded")
 	}
 }
+
+func TestLoadPtrToPtr_ElementNotFound(t *testing.T) {
+	refreshInternalContainer()
+
+	element := &simpleType{}
+	err := LoadPtrToPtr(&element)
+
+	if err != ErrElementNotFound {
+		t.Error("load ptr to ptr returns wrong error message for element that does not exist")
+	}
+}
+
+func TestLoadPtrToPtr_ArgumentShouldBePointer(t *testing.T) {
+	refreshInternalContainer()
+
+	element := simpleType{}
+	err := LoadPtrToPtr(element)
+
+	if err != ErrMustBePointer {
+		t.Error("load returns wrong error message for element by pointer")
+	}
+}
+
+func TestLoadPtrToPtr_ArgumentShouldBePointerToPointer(t *testing.T) {
+	refreshInternalContainer()
+
+	element := &simpleType{}
+	err := LoadPtrToPtr(element)
+
+	if err != ErrMustBePointerToPointer {
+		t.Error("load returns wrong error message for element by pointer")
+	}
+}
+
+func TestLoadPtrToPtr_ArgumentShouldBeStruct(t *testing.T) {
+	refreshInternalContainer()
+
+	element := "just a string"
+	ptr := &element
+	err := LoadPtrToPtr(&ptr)
+
+	if err != ErrMustBePointerToPointerToStruct {
+		t.Error("load returns wrong error message for non struct element")
+	}
+}
+
+func TestLoadPtrToPtr_Success(t *testing.T) {
+	refreshInternalContainer()
+
+	original := &simpleType{}
+	_ = Set(original)
+
+	target := &simpleType{}
+	err := LoadPtrToPtr(&target)
+	if err != nil {
+		t.Error("element should be loaded")
+	}
+}
