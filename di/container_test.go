@@ -42,6 +42,21 @@ func TestSet_Success(t *testing.T) {
 	}
 }
 
+func TestSet_Count(t *testing.T) {
+	refreshInternalContainer()
+
+	if 0 != len(container) {
+		t.Error("container should be empty")
+		t.FailNow()
+	}
+
+	_ = Set(&simpleType{})
+
+	if 1 != len(container) {
+		t.Error("set is unable to add element to container")
+	}
+}
+
 func TestSet_ArgumentMustBePointer(t *testing.T) {
 	refreshInternalContainer()
 
